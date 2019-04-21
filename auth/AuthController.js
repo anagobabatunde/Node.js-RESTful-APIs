@@ -30,3 +30,16 @@ router.post('/register', function(req, res) {
         }
     );
 });
+
+router.get('/me', function(req, res) {
+    var token = res.header['x-access-token'];
+    if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+
+    jwt.verify(token, config.secret, function(error, decoded) {
+        if (error) return res.status(500).send({ auth: false, message : 'failed to authenticate token.'});
+
+        res.status(200).send(decoded)
+    });
+})
+
+module.exports = router;
